@@ -21,16 +21,6 @@ pub enum Cell {
     Alive = 1,
 }
 
-impl From<u32> for Cell {
-    fn from(x: u32) -> Self {
-        if x == 1 {
-            Cell::Alive
-        } else {
-            Cell::Dead
-        }
-    }
-}
-
 #[wasm_bindgen]
 pub struct Universe {
     width: u32,
@@ -130,5 +120,10 @@ impl Universe {
 
     pub fn cells(&self) -> *const u32 {
         self.cells.as_slice().as_ptr()
+    }
+
+    pub fn toggle_cell(&mut self, row: u32, column: u32) {
+        let idx = self.get_index(row, column);
+        self.cells.set(idx, !self.cells[idx]);
     }
 }
