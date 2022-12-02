@@ -88,16 +88,15 @@ impl Universe {
                 let cell = self.cells[idx];
                 let live_neighbors = self.live_neighbor_count(row, column);
 
-                next.set(
-                    idx,
-                    match (cell, live_neighbors) {
-                        (true, x) if x < 2 => false,
-                        (true, 2) | (true, 3) => true,
-                        (true, x) if x > 3 => false,
-                        (false, 3) => true,
-                        (otherwise, _) => otherwise,
-                    },
-                );
+                let next_cell = match (cell, live_neighbors) {
+                    (true, x) if x < 2 => false,
+                    (true, 2) | (true, 3) => true,
+                    (true, x) if x > 3 => false,
+                    (false, 3) => true,
+                    (otherwise, _) => otherwise,
+                };
+
+                next.set(idx, next_cell);
             }
         }
 
@@ -105,6 +104,8 @@ impl Universe {
     }
 
     pub fn new(width: u32, height: u32) -> Universe {
+        utils::set_panic_hook();
+
         let size = (width * height) as usize;
         let mut cells = FixedBitSet::with_capacity(size);
 
